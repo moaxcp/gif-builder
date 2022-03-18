@@ -1,47 +1,51 @@
 plugins {
     id 'java-library'
-    id 'org.ajoberstar.grgit' version '3.0.0'
-    id 'org.ajoberstar.reckon' version '0.9.0'
+    id 'org.ajoberstar.grgit' version '5.0.0'
+    id 'org.ajoberstar.reckon' version '0.16.1'
 }
 
 group = 'com.github.moaxcp'
 description = 'gif builder'
 
 reckon {
-    scopeFromProp()
-    snapshotFromProp()
+    snapshots()
+    scopeCalc = calcScopeFromProp().or(calcScopeFromCommitMessages())
+    stageCalc = calcStageFromProp()
 }
 
 javadoc {
     options.addBooleanOption('html5', true)
-    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/17/docs/api/'
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
-
-test {
-    useJUnitPlatform()
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-
-    reports {
-        html.enabled = true
-    }
-
-    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
-}
+sourceCompatibility = 17
+targetCompatibility = 17
 
 repositories {
-    jcenter()
+    mavenCentral()
+}
+
+sourceSets {
+    example {
+        java {
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+    }
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
-    testImplementation 'org.jmockit:jmockit:1.46'
-    testImplementation 'org.assertj:assertj-core:3.12.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    annotationProcessor 'org.immutables:value:2.9.0'
+    compileOnly 'org.immutables:value:2.9.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.jmockit:jmockit:1.49'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
 }
