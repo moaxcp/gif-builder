@@ -1,40 +1,37 @@
 package com.github.moaxcp.gifbuilder.example;
 
-import com.github.moaxcp.gifbuilder.GifBuilder;
-import com.github.moaxcp.gifbuilder.GifSpec;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import javax.imageio.ImageIO;
 
 import static com.github.moaxcp.gifbuilder.GifMethods.gif;
 import static com.github.moaxcp.gifbuilder.GifMethods.image;
 
 public class Main {
 
-  private static int count;
+  private static int count = 1;
 
   public static void main(String... args) throws IOException {
-    GifSpec gifSpec = gif("image.gif")
+    gif("gif.gif")
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
-        .build();
-
-    new GifBuilder()
-        .file(Path.of("./image.gif"))
-        .image(incrementImage())
-        .image(incrementImage())
-        .delay(100)
-        .build();
+        .build()
+        .create();
   }
 
-  public static BufferedImage incrementImage() {
-    var image = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
-    var graphics = image.createGraphics();
+  public static BufferedImage incrementImage() throws IOException {
+    var image = new BufferedImage(600, 600, BufferedImage.TYPE_3BYTE_BGR);
+    var graphics = image.getGraphics();
+    graphics.setColor(Color.WHITE);
     graphics.drawRect(10 * count, 10 * count, 50, 50);
-
+    graphics.dispose();
+    ImageIO.write(image, "png", new File("image" + count + ".png"));
+    count++;
     return image;
   }
 }

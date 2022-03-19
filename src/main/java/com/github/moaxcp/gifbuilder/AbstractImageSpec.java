@@ -1,22 +1,19 @@
 package com.github.moaxcp.gifbuilder;
 
-import org.immutables.value.Value;
-
-import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * Specification for an image within the gif file.
  */
 @Value.Immutable
 public abstract class AbstractImageSpec {
-  public abstract RenderedImage image();
+  public abstract BufferedImage image();
 
   public abstract Optional<Integer> delay();
 
-  public abstract Optional<DisposalMethod> disposalMethod();
-
-  public abstract Optional<Boolean> interlace();
+  public abstract Optional<GifDisposalMethod> disposalMethod();
 
   public abstract Optional<Integer> imageLeftPosition();
 

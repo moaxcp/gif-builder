@@ -1,10 +1,10 @@
 package com.github.moaxcp.gifbuilder;
 
-import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 
 public class GifMethods {
-  public static ImageSpec image(RenderedImage image) {
+  public static ImageSpec image(BufferedImage image) {
     return ImageSpec.builder().image(image).build();
   }
 
