@@ -10,7 +10,7 @@ public enum GifDisposalMethod {
 
   private DisposalMethod value;
 
-  private GifDisposalMethod(DisposalMethod value) {
+  GifDisposalMethod(DisposalMethod value) {
     this.value = value;
   }
 

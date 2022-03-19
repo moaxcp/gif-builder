@@ -15,19 +15,40 @@ import org.immutables.value.Value;
 @Value.Immutable
 public abstract class AbstractGifSpec {
 
+  /**
+   * Path to save gif file
+   * @return
+   */
   public abstract Path file();
+
+  /**
+   * Image specifications in order of sequence of gif
+   * @return
+   */
   public abstract List<ImageSpec> images();
 
+  /**
+   * Default delay of 500 millis used if image spec is missing it.
+   * @return
+   */
   @Value.Default
   public int defaultDelay() {
     return 500;
   }
 
+  /**
+   * Loop for gif. Defaults to 0 (infinite).
+   * @return
+   */
   @Value.Default
   public int loop() {
     return 0;
   }
 
+  /**
+   * Default disposal method of NONE if missing from ImageSpec.
+   * @return
+   */
   @Value.Default
   public GifDisposalMethod defaultDisposalMethod() {
     return GifDisposalMethod.NONE;
@@ -43,6 +64,10 @@ public abstract class AbstractGifSpec {
     }
   }
 
+  /**
+   * Creates the GIF file specified in this GifSpec.
+   * @throws IOException
+   */
   public void create() throws IOException {
     var createInfo = init();
     writeGif(createInfo);
