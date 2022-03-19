@@ -98,6 +98,8 @@ public class Main {
 }
 ```
 
+[![example.gif](example.gif)](example.gif)
+
 # Versions
 
 ## 0.1.0

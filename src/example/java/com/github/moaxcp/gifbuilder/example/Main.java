@@ -14,7 +14,7 @@ public class Main {
   private static int count = 1;
 
   public static void main(String... args) throws IOException {
-    gif("gif.gif")
+    gif("example.gif")
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
         .addImages(image(incrementImage()))
