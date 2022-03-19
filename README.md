@@ -2,6 +2,9 @@
 
 A java dsl for building gifs using [gifencoder](https://github.com/square/gifencoder).
 
+![Maven Central](https://img.shields.io/maven-central/v/com.github.moaxcp/gif-builder)
+[![javadoc](https://javadoc.io/badge2/com.github.moaxcp/gif-builder/javadoc.svg)](https://javadoc.io/doc/com.github.moaxcp/gif-builder)
+
 # DSL
 
 The dsl starts with static methods from `GifMethods`. Start with a `GifSpec.Builder`.
