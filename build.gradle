@@ -3,6 +3,8 @@ plugins {
     id 'org.ajoberstar.grgit' version '5.0.0'
     id 'org.ajoberstar.reckon' version '0.16.1'
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group = 'com.github.moaxcp'
@@ -31,6 +33,11 @@ sourceSets {
         java {
             compileClasspath += sourceSets.main.output
             runtimeClasspath += sourceSets.main.output
+        }
+    }
+    main {
+        java{
+            srcDirs "$buildDir/generated/sources/annotationProcessor/java/main"
         }
     }
 }
@@ -70,8 +77,9 @@ nexusPublishing {
 
 }
 
-signing {
-    sign publishing.publications.mavenJava
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
@@ -80,8 +88,6 @@ publishing {
             groupId = 'com.github.moaxcp.gifbuilder'
             artifactId = project.name
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
             versionMapping {
                 usage('java-api') {
                     fromResolutionOf('runtimeClasspath')
@@ -134,5 +140,9 @@ publishing {
                 }
             }
         }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
     }
 }
