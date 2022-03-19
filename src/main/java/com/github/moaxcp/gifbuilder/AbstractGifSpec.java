@@ -14,11 +14,6 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public abstract class AbstractGifSpec {
-  private int maxWidth;
-  private int maxHeight;
-  private int minWidth;
-  private int minHeight;
-  private int backgroundColor;
 
   public abstract Path file();
   public abstract List<ImageSpec> images();
@@ -54,12 +49,15 @@ public abstract class AbstractGifSpec {
   }
 
   public void create() throws IOException {
-    initDimentions();
-    backgroundColor = guessBackgroundColor();
-    writeGif();
+    var createInfo = init();
+    writeGif(createInfo);
   }
 
-  private void initDimentions() {
+  private CreateInfo init() {
+    int maxWidth = 0;
+    int maxHeight = 0;
+    int minWidth = Integer.MAX_VALUE;
+    int minHeight = Integer.MAX_VALUE;
     for(var imageSpec : images()) {
       var image = imageSpec.image();
       if(image.getWidth() > maxWidth) {
@@ -75,12 +73,36 @@ public abstract class AbstractGifSpec {
         minHeight = image.getHeight();
       }
     }
+
+    return CreateInfo.builder()
+        .maxWidth(maxWidth)
+        .maxHeight(maxHeight)
+        .minWidth(minWidth)
+        .minHeight(minHeight)
+        .backgroundColor(guessBackgroundColor())
+        .build();
   }
 
-  private BufferedImage normalizeImage(BufferedImage image) {
+  private void writeGif(CreateInfo createInfo) throws IOException {
+    try(var out = new FileOutputStream(file().toFile())) {
+      var encoder = new GifEncoder(out, createInfo.maxWidth(), createInfo.maxHeight(), loop());
+      for (var imageSpec : images()) {
+        var image = imageSpec.image();
+        if(!(imageSpec.imageLeftPosition().isPresent() || imageSpec.imageTopPosition().isPresent())) {
+          image = normalizeImage(createInfo, image);
+        }
+        var rgb = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+        var options = options(imageSpec);
+        encoder.addImage(rgb, image.getWidth(), options);
+      }
+      encoder.finishEncoding();
+    }
+  }
+
+  private BufferedImage normalizeImage(CreateInfo createInfo, BufferedImage image) {
     BufferedImage background = null;
-    if(minWidth != maxWidth || minHeight != maxHeight) {
-      background = createOutputImage(backgroundColor, maxWidth, maxHeight, BufferedImage.TYPE_3BYTE_BGR);
+    if(createInfo.minWidth() != createInfo.maxWidth() || createInfo.minHeight() != createInfo.maxHeight()) {
+      background = createOutputImage(createInfo.backgroundColor(), createInfo.maxWidth(), createInfo.maxHeight(), BufferedImage.TYPE_3BYTE_BGR);
     }
     if (background != null) {
       return centerOnOutput(background, image);
@@ -108,22 +130,6 @@ public abstract class AbstractGifSpec {
     g2d.drawImage(image, x, y, image.getWidth(), image.getHeight(), null);
     g2d.dispose();
     return output;
-  }
-
-  private void writeGif() throws IOException {
-    try(var out = new FileOutputStream(file().toFile())) {
-      var encoder = new GifEncoder(out, maxWidth, maxHeight, loop());
-      for (var imageSpec : images()) {
-        var image = imageSpec.image();
-        if(!(imageSpec.imageLeftPosition().isPresent() || imageSpec.imageTopPosition().isPresent())) {
-          image = normalizeImage(image);
-        }
-        var rgb = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
-        var options = options(imageSpec);
-        encoder.addImage(rgb, image.getWidth(), options);
-      }
-      encoder.finishEncoding();
-    }
   }
 
   private ImageOptions options(ImageSpec imageSpec) {
