@@ -15,9 +15,9 @@ public abstract class AbstractImageSpec {
 
   public abstract Optional<GifDisposalMethod> disposalMethod();
 
-  public abstract Optional<Integer> imageLeftPosition();
+  public abstract Optional<Integer> leftPosition();
 
-  public abstract Optional<Integer> imageTopPosition();
+  public abstract Optional<Integer> topPosition();
 
   @Value.Check
   protected void check() {
@@ -26,12 +26,12 @@ public abstract class AbstractImageSpec {
         throw new IllegalArgumentException("delay must not be less than one.");
       }
     });
-    imageLeftPosition().ifPresent(imageLeftPosition -> {
+    leftPosition().ifPresent(imageLeftPosition -> {
       if(imageLeftPosition < 0 || imageLeftPosition > 65535) {
         throw new IllegalArgumentException("imageLeftPosition must be a value of 0 to 65535.");
       }
     });
-    imageTopPosition().ifPresent(imageTopPosition -> {
+    topPosition().ifPresent(imageTopPosition -> {
       if(imageTopPosition < 0 || imageTopPosition > 65535) {
         throw new IllegalArgumentException("imageTopPosition must be a value of 0 to 65535.");
       }

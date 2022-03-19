@@ -33,11 +33,6 @@ public abstract class AbstractGifSpec {
     return GifDisposalMethod.NONE;
   }
 
-  @Value.Default
-  public boolean defaultInterlace() {
-    return false;
-  }
-
   @Value.Check
   protected void check() {
     if(loop() < 0) {
@@ -88,7 +83,7 @@ public abstract class AbstractGifSpec {
       var encoder = new GifEncoder(out, createInfo.maxWidth(), createInfo.maxHeight(), loop());
       for (var imageSpec : images()) {
         var image = imageSpec.image();
-        if(!(imageSpec.imageLeftPosition().isPresent() || imageSpec.imageTopPosition().isPresent())) {
+        if(!(imageSpec.leftPosition().isPresent() || imageSpec.topPosition().isPresent())) {
           image = normalizeImage(createInfo, image);
         }
         var rgb = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
