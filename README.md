@@ -102,6 +102,10 @@ public class Main {
 
 # Versions
 
+## 0.2.0
+
+Parent directories are now created before writing the gif file.
+
 ## 0.1.0
 
 Initial implementation

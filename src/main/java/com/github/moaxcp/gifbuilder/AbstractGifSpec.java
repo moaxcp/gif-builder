@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -104,6 +105,7 @@ public abstract class AbstractGifSpec {
   }
 
   private void writeGif(CreateInfo createInfo) throws IOException {
+    Files.createDirectories(file().getParent());
     try(var out = new FileOutputStream(file().toFile())) {
       var encoder = new GifEncoder(out, createInfo.maxWidth(), createInfo.maxHeight(), loop());
       for (var imageSpec : images()) {
